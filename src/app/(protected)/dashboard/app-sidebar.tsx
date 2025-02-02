@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar";
+import useProject from "~/hooks/use-project";
 import { cn } from "~/lib/utils";
 
 const items = [
@@ -33,17 +34,9 @@ const items = [
   { title: "Billing", url: "/billing", icon: CreditCardIcon },
 ];
 
-const projects = [
-  { name: "Project 1" },
-  { name: "Project 2" },
-  { name: "Project 3" },
-  { name: "Project 4" },
-  { name: "Project 5" },
-  { name: "Project 6" },
-];
-
 const AppSidebar = () => {
   const pathname = usePathname();
+  const { projects, projectId, setProjectId } = useProject();
   const { open } = useSidebar();
 
   return (
@@ -93,16 +86,19 @@ const AppSidebar = () => {
           <SidebarGroupLabel>Your Projects</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {projects.map((project) => {
+              {projects?.map((project) => {
                 return (
                   <SidebarMenuItem key={project.name}>
                     <SidebarMenuButton asChild>
-                      <div>
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => setProjectId(project.id)}
+                      >
                         <div
                           className={cn(
                             "flex size-6 items-center justify-center rounded-sm border bg-white text-sm text-primary",
                             {
-                              "bg-primary text-white": true,
+                              "bg-primary text-white": project.id === projectId,
                             },
                           )}
                         >
