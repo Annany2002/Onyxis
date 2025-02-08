@@ -1,5 +1,6 @@
 import { Octokit } from "octokit";
 import { db } from "~/server/db";
+import { commitSummary } from "./gemini";
 
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -16,10 +17,8 @@ type Reponse = {
 export const getCommitHashes = async (
   githubUrl: string,
 ): Promise<Reponse[]> => {
-  const { data } = await octokit.rest.repos.listCommits({
-    owner: "docker",
-    repo: "genai-stack",
-  });
+  const [owner, repo] = githubUrl.split("/").slice(3, 5);
+  const { data } = await octokit.request(`GET /repos/${owner}/${repo}/commits`);
 
   const sortedCommits = data.sort(
     (a: any, b: any) =>
@@ -27,25 +26,72 @@ export const getCommitHashes = async (
       new Date(a.commit.author.date).getTime(),
   ) as any[];
 
-  return sortedCommits.slice(0, 15).map((commit: any) => ({
+  return sortedCommits.slice(0, 10).map((commit: any) => ({
     commitHash: commit.sha as string,
     commitMessage: commit.commit.message ?? "",
     commitAuthorName: commit.commit?.author?.name ?? "",
-    commitAuthorAvatar: commit?.author?.avatar ?? "",
+    commitAuthorAvatar: commit?.author?.avatar_url ?? "",
     commitDate: commit.commit?.author?.date ?? "",
   }));
 };
 
-export const pollCommit = async (projectId: string) => {
-  const { project, githubUrl } = await fetchGithubProjectUrl(projectId);
-  const commitHashes = await getCommitHashes(githubUrl!);
+export const pollCommits = async (projectId: string) => {
+  const { githubUrl } = await fetchGithubProjectUrl(projectId);
+  const commitHashes = await getCommitHashes(githubUrl as string);
   const unprocessedCommits = await filterUnprocessedCommits(
     projectId,
     commitHashes,
   );
 
-  return unprocessedCommits;
+  const summaryResponses = await Promise.allSettled(
+    unprocessedCommits.map((commit) => {
+      return summariseCommit(githubUrl!, commit.commitHash);
+    }),
+  );
+
+  const summaries = summaryResponses.map((reponse) => {
+    if (reponse.status === "fulfilled") {
+      return reponse.value;
+    }
+    return "";
+  });
+
+  const commits = await db.commit.createMany({
+    data: summaries.map((summary, index) => {
+      return {
+        projectId: projectId,
+        commitHash: unprocessedCommits[index]!.commitHash,
+        commitMessage: unprocessedCommits[index]!.commitMessage,
+        commitAuthorName: unprocessedCommits[index]!.commitAuthorName,
+        commitAuthorAvatar: unprocessedCommits[index]!.commitAuthorAvatar,
+        commitDate: unprocessedCommits[index]!.commitDate,
+        summary: summary,
+      };
+    }),
+  });
+
+  return commits;
 };
+
+async function summariseCommit(githubUrl: string, commitHash: string) {
+  try {
+    const response = await fetch(`${githubUrl}/commit/${commitHash}.diff`, {
+      headers: {
+        Accept: "application/vnd.github.v3.diff",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.text();
+    return await commitSummary(data);
+  } catch (error) {
+    console.error("Error fetching or processing commit diff:", error);
+    throw error;
+  }
+}
 
 async function fetchGithubProjectUrl(projectId: string) {
   const project = await db.project.findUnique({
