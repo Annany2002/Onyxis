@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
-import { Button } from "~/components/ui/button";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vs } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { cn } from "~/lib/utils";
 
 type Props = {
@@ -18,30 +17,29 @@ const CodeReferences = ({ fileReferences }: Props) => {
   return (
     <div className="max-w-[70vw]">
       <Tabs value={tab} onValueChange={setTab}>
-        <div className="flex gap-2 overflow-scroll rounded-md bg-gray-200 p-2">
+        <div className="flex gap-2 overflow-auto rounded-md bg-gray-200 p-1">
           {fileReferences.map((file) => (
-            <Button
+            <button
               onClick={() => setTab(file.fileName)}
               key={file.fileName}
               className={cn(
-                "whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                "whitespace-nowrap rounded-md bg-transparent px-3 py-1.5 text-sm font-medium transition-colors",
                 {
-                  "text-primary-background bg-primary-foreground":
-                    tab === file.fileName,
+                  "bg-primary text-primary-foreground": tab === file.fileName,
                 },
               )}
             >
               {file.fileName}
-            </Button>
+            </button>
           ))}
         </div>
         {fileReferences.map((file) => (
           <TabsContent
             key={file.fileName}
             value={file.fileName}
-            className="max-h-[40vh] max-w-7xl overflow-scroll rounded-md"
+            className="max-h-[40vh] max-w-7xl overflow-auto rounded-md"
           >
-            <SyntaxHighlighter language="typescript" style={vs}>
+            <SyntaxHighlighter language="typescript" style={dracula}>
               {file.sourceCode}
             </SyntaxHighlighter>
           </TabsContent>

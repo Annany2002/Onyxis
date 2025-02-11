@@ -44,7 +44,6 @@ It is given only as an example of the appropriate comments.`,
 };
 
 export const summariseCode = async (doc: Document) => {
-  console.log("getting summary for", doc.metadata.soure);
   try {
     const code = doc.pageContent.slice(0, 10000);
     const response = await model.generateContent([

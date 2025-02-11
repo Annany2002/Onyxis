@@ -2,7 +2,6 @@
 
 import {
   Bot,
-  CreditCard,
   CreditCardIcon,
   LayoutDashboard,
   Plus,

@@ -25,7 +25,7 @@ export async function askQuestion(question: string, projectId: string) {
     ORDER BY similarity DESC
     LIMIT 10
     `) as { fileName: string; sourceCode: string; summary: string }[];
-  console.log("Result for askQuestion", result);
+
   let context = "";
 
   for (const doc of result) {
@@ -33,7 +33,7 @@ export async function askQuestion(question: string, projectId: string) {
   }
 
   (async () => {
-    const { textStream } = await streamText({
+    const { textStream } = streamText({
       model: google("gemini-1.5-flash"),
       prompt: `
       You are a ai coding assistant who answers questions about the codebase. Your target audience is technical interns who are new to the codebase.
@@ -50,9 +50,10 @@ export async function askQuestion(question: string, projectId: string) {
       END QUESTION
       AI assistant will take into account the context provided in the conversation and provide the best possible answer to the user.
       If the context does not provide the answer to the question, the AI assistant will say that it does not have enough information to answer the question.
-      AI assistant will not apologize for the previous responses, but instead will indicated new informatioon was gained.
+      AI will only answer the question by taking information from the context and codebase and strictly not from outside.
+      AI assistant will not apologize for the previous responses, but instead will indicated new information was gained.
       AI assistant will not invent anything that is not drawn directly from the context.
-      Answer in markdown syntax with code snippets if needed. Be as detailed as possible when neccessary, make sure to provide the best possible answer to the user.
+      Answer in markdown syntax with code snippets if needed. Be as detailed as possible when neccessary, make sure to provide the best possible answer to the user and display strictly only the relevant sources.
       `,
     });
 

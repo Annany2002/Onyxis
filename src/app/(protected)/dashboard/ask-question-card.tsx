@@ -14,9 +14,14 @@ import {
 } from "~/components/ui/dialog";
 import { Textarea } from "~/components/ui/textarea";
 import CodeReferences from "./code-references";
+import { api } from "~/trpc/react";
+import { toast } from "sonner";
+import useRefetch from "~/hooks/use-refetch";
 
 const AskQuesionCard = () => {
   const { selectedProject } = useProject();
+  const refetch = useRefetch();
+  const saveAnswer = api.project.saveAnswer.useMutation();
   const [question, setQuestion] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,25 +56,52 @@ const AskQuesionCard = () => {
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[80vw]">
+        <DialogContent className="m-1 sm:max-w-[80vw]">
           <DialogHeader>
-            <DialogTitle>
-              <Image
-                className="rounded-full"
-                src={"/Logo.jpeg"}
-                alt="logo"
-                width={40}
-                height={40}
-              />
-            </DialogTitle>
+            <div className="flex items-center gap-2">
+              <DialogTitle>
+                <Image
+                  className="rounded-full"
+                  src={"/Logo.jpeg"}
+                  alt="logo"
+                  width={40}
+                  height={40}
+                />
+              </DialogTitle>
+              <Button
+                disabled={saveAnswer.isPending}
+                variant={"outline"}
+                onClick={() => {
+                  saveAnswer.mutate(
+                    {
+                      projectId: selectedProject?.id as string,
+                      question,
+                      answer,
+                      fileReferences: filesReferences,
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success("Answer saved successfully");
+                        refetch();
+                      },
+                      onError: () => {
+                        toast.error("Failed to save answer");
+                      },
+                    },
+                  );
+                }}
+              >
+                Save Answer
+              </Button>
+            </div>
           </DialogHeader>
 
           <MDEditor.Markdown
             source={answer}
-            className="max-h-[40vh] max-w-[70vw] overflow-scroll bg-transparent"
+            className="max-h-[25vh] max-w-[70vw] overflow-auto p-2"
           />
           <CodeReferences fileReferences={filesReferences} />
-          <div className="h4" />
+          <div className="h-2" />
           <Button type="button" onClick={() => setOpen(false)}>
             Close
           </Button>
