@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Bot,
-  CreditCardIcon,
-  LayoutDashboard,
-  Plus,
-  Presentation,
-} from "lucide-react";
+import { Bot, CreditCardIcon, LayoutDashboard, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,7 +23,6 @@ import { cn } from "~/lib/utils";
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Q&A", url: "/qa", icon: Bot },
-  { title: "Meetings", url: "/meetings", icon: Presentation },
   { title: "Billing", url: "/billing", icon: CreditCardIcon },
 ];
 
@@ -89,7 +82,8 @@ const AppSidebar = () => {
                 return (
                   <SidebarMenuItem key={project.name}>
                     <SidebarMenuButton asChild>
-                      <div
+                      <Link
+                        href={"/dashboard"}
                         className="cursor-pointer"
                         onClick={() => setProjectId(project.id)}
                       >
@@ -104,7 +98,7 @@ const AppSidebar = () => {
                           {project.name[0]}
                         </div>
                         <span>{project.name}</span>
-                      </div>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );

@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -71,6 +72,9 @@ const CreatePage = () => {
             />
             <Button type="submit" disabled={createProject.isPending}>
               Create Project
+              {createProject.isPending && (
+                <Loader2 className="ml-1 animate-spin" />
+              )}
             </Button>
           </form>
         </div>

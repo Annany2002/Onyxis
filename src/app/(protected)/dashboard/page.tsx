@@ -33,15 +33,11 @@ const DashboardPage = () => {
         </div>
 
         <div className="h-4" />
-
-        <div className="flex items-center gap-4">
-          Team Members Invite button Archive button
-        </div>
       </div>
 
       <div className="mt-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
-          <AskQuesionCard /> Meeting Card
+        <div className="w-full p-2">
+          <AskQuesionCard />
         </div>
       </div>
 

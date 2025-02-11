@@ -17,6 +17,7 @@ import CodeReferences from "./code-references";
 import { api } from "~/trpc/react";
 import { toast } from "sonner";
 import useRefetch from "~/hooks/use-refetch";
+import { LoaderCircle } from "lucide-react";
 
 const AskQuesionCard = () => {
   const { selectedProject } = useProject();
@@ -122,6 +123,7 @@ const AskQuesionCard = () => {
             <div className="h-4" />
             <Button type="submit" disabled={loading}>
               Ask Onyxis
+              {loading && <LoaderCircle className="ml-1 animate-spin" />}
             </Button>
           </form>
         </CardContent>
