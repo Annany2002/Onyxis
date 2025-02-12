@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { SidebarProvider } from "~/components/ui/sidebar";
 import AppSidebar from "./app-sidebar";
 

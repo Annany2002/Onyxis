@@ -14,6 +14,9 @@ const config = {
       },
     ],
   },
+  eslint: {
+    dirs: [],
+  },
 };
 
 export default config;

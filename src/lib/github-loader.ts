@@ -4,10 +4,10 @@ import { generateEmbedding, summariseCode } from "./gemini";
 import { db } from "~/server/db";
 
 export const loadGithubRepos = async (
-  githuUrl: string,
+  githubUrl: string,
   githubToken?: string,
 ) => {
-  const loader = new GithubRepoLoader(githuUrl, {
+  const loader = new GithubRepoLoader(githubUrl, {
     accessToken: githubToken || "",
     branch: "main",
     ignoreFiles: [

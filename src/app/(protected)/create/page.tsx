@@ -29,7 +29,9 @@ const CreatePage = () => {
       {
         onSuccess: () => {
           toast.success("Project created successfully");
-          refetch();
+          (async () => {
+            await refetch();
+          })();
           reset();
         },
         onError: () => {

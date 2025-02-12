@@ -19,7 +19,7 @@ export const projectRouter = createTRPCRouter({
           githubUrl: input.githubUrl,
           UserToProject: {
             create: {
-              userId: ctx.user.userId as string,
+              userId: ctx.user.userId!,
             },
           },
         },
@@ -34,7 +34,7 @@ export const projectRouter = createTRPCRouter({
       where: {
         UserToProject: {
           some: {
-            userId: ctx.user.userId as string,
+            userId: ctx.user.userId!,
           },
         },
         deletedAt: null,
@@ -61,7 +61,13 @@ export const projectRouter = createTRPCRouter({
         projectId: z.string(),
         question: z.string(),
         answer: z.string(),
-        fileReferences: z.any(),
+        fileReferences: z.array(
+          z.object({
+            fileName: z.string(),
+            sourceCode: z.string(),
+            summary: z.string(),
+          }),
+        ),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -71,7 +77,7 @@ export const projectRouter = createTRPCRouter({
           question: input.question,
           answer: input.answer,
           fileReferences: input.fileReferences,
-          userId: ctx.user.userId as string,
+          userId: ctx.user.userId!,
         },
       });
     }),

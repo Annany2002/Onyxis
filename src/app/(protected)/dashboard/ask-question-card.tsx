@@ -75,7 +75,7 @@ const AskQuesionCard = () => {
                 onClick={() => {
                   saveAnswer.mutate(
                     {
-                      projectId: selectedProject?.id as string,
+                      projectId: selectedProject?.id!,
                       question,
                       answer,
                       fileReferences: filesReferences,
@@ -83,7 +83,9 @@ const AskQuesionCard = () => {
                     {
                       onSuccess: () => {
                         toast.success("Answer saved successfully");
-                        refetch();
+                        (async () => {
+                          await refetch();
+                        })();
                       },
                       onError: () => {
                         toast.error("Failed to save answer");

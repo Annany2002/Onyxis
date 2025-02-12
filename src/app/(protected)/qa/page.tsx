@@ -13,6 +13,7 @@ import AskQuesionCard from "../dashboard/ask-question-card";
 import { Fragment, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import CodeReferences from "../dashboard/code-references";
+import Image from "next/image";
 
 const QAPage = () => {
   const { projectId } = useProject();
@@ -33,10 +34,11 @@ const QAPage = () => {
             <Fragment key={question.id}>
               <SheetTrigger onClick={() => setQuestionIndex(index)}>
                 <div className="flex items-center gap-4 rounded-lg border bg-white p-4 shadow">
-                  <img
+                  <Image
                     className="rounded-full"
                     height={30}
                     width={30}
+                    alt="user"
                     src={question.user.imageUrl ?? ""}
                   />
                   <div className="flex flex-col text-left">
@@ -68,7 +70,7 @@ const QAPage = () => {
               source={question.answer}
             />
             <CodeReferences
-              fileReferences={(question.fileReferences ?? []) as any}
+              fileReferences={question.fileReferences ?? ([] as any)}
             />
           </SheetHeader>
         </SheetContent>
