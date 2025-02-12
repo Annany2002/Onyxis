@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -18,6 +19,7 @@ const CreatePage = () => {
   const { handleSubmit, register, reset } = useForm<FormInput>();
   const createProject = api.project.createProject.useMutation();
   const refetch = useRefetch();
+  const router = useRouter();
 
   const onSubmit = (data: FormInput) => {
     createProject.mutate(
@@ -33,6 +35,7 @@ const CreatePage = () => {
             await refetch();
           })();
           reset();
+          router.push("/dashboard");
         },
         onError: () => {
           toast.error("Failed to create project");
