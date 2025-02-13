@@ -8,14 +8,8 @@ const SideBarLayout = ({ children }: { children: ReactNode }) => {
     <SidebarProvider>
       <AppSidebar />
       <main className="m-2 w-full">
-        <div className="item-center flex gap-2 rounded-md border border-sidebar-border bg-sidebar p-2 px-4 shadow">
-          {/* <SearchBar/> */}
-          <div className="ml-auto"></div>
-          <UserButton />
-        </div>
-        <div className="m-4"></div>
         {/* main content */}
-        <div className="max-h-[calc(100vh-6rem)] overflow-y-scroll rounded-md border border-sidebar-border bg-sidebar p-4 shadow">
+        <div className="overflow-y-scroll rounded-md border border-sidebar-border bg-sidebar p-4 shadow">
           {children}
         </div>
       </main>

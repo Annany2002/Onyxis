@@ -1,5 +1,6 @@
 "use client";
 
+import { UserButton } from "@clerk/nextjs";
 import { Bot, CreditCardIcon, LayoutDashboard, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -43,7 +44,10 @@ const AppSidebar = () => {
             height={40}
           />
           {open && (
-            <h1 className="text-xl font-bold text-primary/70">Onyxis</h1>
+            <div className="flex w-full items-center justify-between">
+              <h1 className="text-xl font-bold text-primary/70">Onyxis</h1>
+              <UserButton />
+            </div>
           )}
         </div>
       </SidebarHeader>

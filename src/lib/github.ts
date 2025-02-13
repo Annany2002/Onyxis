@@ -37,7 +37,7 @@ export const getCommitHashes = async (
 
 export const pollCommits = async (projectId: string) => {
   const { githubUrl } = await fetchGithubProjectUrl(projectId);
-  const commitHashes = await getCommitHashes(githubUrl as string);
+  const commitHashes = await getCommitHashes(githubUrl!);
   const unprocessedCommits = await filterUnprocessedCommits(
     projectId,
     commitHashes,
